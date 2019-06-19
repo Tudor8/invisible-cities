@@ -3,32 +3,76 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class InputTest : MonoBehaviour {
-    [SerializeField] LayerMask groundMask;
-    [SerializeField] LayerMask buildingMask;
+    public static readonly int PRIMARY_MOUSE_BUTTON = 0;
 
-    [SerializeField] ObjectTest currentBuilding = null;
+    [Header ("Scene References")]
+    [SerializeField] Transform ground;
 
-    void Update() {
-        if(Input.GetMouseButtonDown(0)) {
-            if(currentBuilding != null) {
-                currentBuilding = null;
-                return;
+    [Header ("Settings")]
+    [SerializeField] LayerMask groundLayer;
+    [SerializeField] LayerMask buildingLayer;
+
+    [Header ("Read Only")]
+    [SerializeField, ReadOnly] private ObjectTest currentBuilding = null;
+    [SerializeField, ReadOnly] private Plane groundPlane;
+
+    void Awake () {
+        this.groundPlane = new Plane (Vector3.up, this.ground.position);
+    }
+
+    void Update () {
+        if (Input.GetMouseButtonDown (PRIMARY_MOUSE_BUTTON)) {
+            if (this.currentBuilding != null) {
+                ClearCurrentBuilding ();
             }
-
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit, buildingMask)) {
-                if(currentBuilding == null) {
-                    currentBuilding = hit.rigidbody.gameObject.GetComponent<ObjectTest>();
-                }
-            }
-        }     
-
-        if(currentBuilding != null) {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-          
-            if (Physics.Raycast(ray, out RaycastHit hit, groundMask)) {
-                currentBuilding.transform.position = hit.point;
+            else {
+                GetBuildingUnderMousePosition ();
             }
         }
+
+        if (this.currentBuilding != null) {
+            MoveBuildingToMousePosition ();
+        }
+    }
+
+    private void GetBuildingUnderMousePosition () {
+        Ray ray = CreateRayFromCursor ();
+        if (ShootRayOnLayer (ray, this.buildingLayer, out RaycastHit hit)) {
+            if (this.currentBuilding == null) {
+                SetCurrentBuildingTo (hit.rigidbody.gameObject);
+            }
+        }
+    }
+
+    private void MoveBuildingToMousePosition () {
+        Ray ray = CreateRayFromCursor ();
+        if (ShootRayOnLayer (ray, this.groundLayer, out RaycastHit hit)) {
+            this.currentBuilding.transform.position = hit.point;
+        }
+        else if (Math3d.IntersectRayAndPlane (ray, this.groundPlane, out Vector3 intersection)) {
+            this.currentBuilding.transform.position = intersection;
+        }
+    }
+
+    private Ray CreateRayFromCursor () {
+        return Camera.main.ScreenPointToRay (Input.mousePosition);
+    }
+
+    private bool ShootRayOnLayer (Ray ray, LayerMask layerMask, out RaycastHit hit) {
+        return Physics.Raycast (ray, out hit, Mathf.Infinity, layerMask);
+    }
+
+    private void SetCurrentBuildingTo (GameObject gameObject) {
+        ObjectTest objectTest = gameObject?.GetComponent<ObjectTest> ();
+
+        if (objectTest != null) {
+            this.currentBuilding = objectTest;
+            this.currentBuilding.Activate ();
+        }
+    }
+
+    private void ClearCurrentBuilding () {
+        this.currentBuilding.Deactivate ();
+        this.currentBuilding = null;
     }
 }

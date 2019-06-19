@@ -60,7 +60,7 @@ Transform:
   m_GameObject: {fileID: 6721466617210101580}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.9, z: 0}
-  m_LocalScale: {x: 2.75, y: 1.8, z: 2.75}
+  m_LocalScale: {x: 2.5, y: 1.8, z: 2.5}
   m_Children: []
   m_Father: {fileID: 6721466616455721889}
   m_RootOrder: 1
@@ -263,6 +263,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   snapToGrid: {fileID: 6721466617841690712}
+  snapToLayer: {fileID: 6721466617841690695}
 --- !u!54 &6721466617592024354
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -291,7 +292,7 @@ GameObject:
   - component: {fileID: 6721466617841690695}
   - component: {fileID: 6721466617841690712}
   m_Layer: 10
-  m_Name: Snap To Grid
+  m_Name: Snapping Logic
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -327,6 +328,7 @@ MonoBehaviour:
   layer:
     serializedVersion: 2
     m_Bits: 512
+  rayDistance: 10
 --- !u!114 &6721466617841690712
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -340,6 +342,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetObject: {fileID: 6721466617592024352}
-  cellSize: 1
-  spaceTaken: 3
-  offset: {x: 0, y: 0, z: 0}
+  cellSize: 0.5
+  spaceTaken: 6
