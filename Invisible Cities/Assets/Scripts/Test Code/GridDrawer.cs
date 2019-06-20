@@ -14,20 +14,26 @@ public class GridDrawer : MonoBehaviour {
     [SerializeField] float cellWorldSize = 1;
     [SerializeField] Color color = Color.black;
 
-    void Awake () {
+    public float CellWorldSize { get => this.cellWorldSize; set => this.cellWorldSize = value; }
+    public int TotalCells { get => this.totalCells; set => this.totalCells = value; }
+
+    public void Generate() {
+        Vector3 worldSize = Vector3.one * totalCells * cellWorldSize;
+        worldSize.y = 0;
+
         Mesh mesh = new Mesh ();
         List<Vector3> verticies = new List<Vector3> ();
 
         List<int> indicies = new List<int> ();
-        for (int i = 0; i <= this.totalCells; i++) {
-            verticies.Add (new Vector3 (i * this.cellWorldSize, 0, 0));
-            verticies.Add (new Vector3 (i * this.cellWorldSize, 0, this.cellWorldSize * this.totalCells));
+        for (int i = 0; i <= this.TotalCells; i++) {
+            verticies.Add (new Vector3 (i * this.CellWorldSize, 0, 0) - worldSize / 2);
+            verticies.Add (new Vector3 (i * this.CellWorldSize, 0, this.CellWorldSize * this.TotalCells) - worldSize / 2);
 
             indicies.Add (4 * i + 0);
             indicies.Add (4 * i + 1);
 
-            verticies.Add (new Vector3 (0, 0, i * this.cellWorldSize));
-            verticies.Add (new Vector3 (this.cellWorldSize * this.totalCells, 0, i * this.cellWorldSize));
+            verticies.Add (new Vector3 (0, 0, i * this.CellWorldSize) - worldSize / 2);
+            verticies.Add (new Vector3 (this.CellWorldSize * this.TotalCells, 0, i * this.CellWorldSize) - worldSize / 2);
 
             indicies.Add (4 * i + 2);
             indicies.Add (4 * i + 3);

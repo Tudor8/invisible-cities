@@ -30,4 +30,12 @@ public static class VectorExtensions {
 
         return result;
     }
+
+    public static Vector3 DivideBy (this Vector3 vector, Vector3 divident) {
+        vector.x /= divident.x;
+        vector.y /= divident.y;
+        vector.z /= divident.z;
+
+        return vector;
+    }
 }

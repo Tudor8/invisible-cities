@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class InputTest : MonoBehaviour {
-    public static readonly int PRIMARY_MOUSE_BUTTON = 0;
+    public const int PRIMARY_MOUSE_BUTTON = 0;
 
     [Header ("Scene References")]
     [SerializeField] Transform ground;
