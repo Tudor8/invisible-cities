@@ -10,30 +10,30 @@ public class GridDrawer : MonoBehaviour {
     [SerializeField] MeshRenderer meshRenderer = null;
 
     [Header ("Settings")]
-    [SerializeField] int totalCells = 100;
-    [SerializeField] float cellWorldSize = 1;
+    [SerializeField] int tilesPerChunk = 100;
+    [SerializeField] float tileWorldSize = 1;
     [SerializeField] Color color = Color.black;
 
-    public float CellWorldSize { get => this.cellWorldSize; set => this.cellWorldSize = value; }
-    public int TotalCells { get => this.totalCells; set => this.totalCells = value; }
+    public float TileWorldSize { get => this.tileWorldSize; set => this.tileWorldSize = value; }
+    public int TilesPerChunk { get => this.tilesPerChunk; set => this.tilesPerChunk = value; }
 
-    public void Generate() {
-        Vector3 worldSize = Vector3.one * totalCells * cellWorldSize;
+    public void Generate () {
+        Vector3 worldSize = Vector3.one * this.tilesPerChunk * this.tileWorldSize;
         worldSize.y = 0;
 
         Mesh mesh = new Mesh ();
         List<Vector3> verticies = new List<Vector3> ();
 
         List<int> indicies = new List<int> ();
-        for (int i = 0; i <= this.TotalCells; i++) {
-            verticies.Add (new Vector3 (i * this.CellWorldSize, 0, 0) - worldSize / 2);
-            verticies.Add (new Vector3 (i * this.CellWorldSize, 0, this.CellWorldSize * this.TotalCells) - worldSize / 2);
+        for (int i = 0; i <= TilesPerChunk; i++) {
+            verticies.Add (new Vector3 (i * TileWorldSize, 0, 0) - worldSize / 2);
+            verticies.Add (new Vector3 (i * TileWorldSize, 0, TileWorldSize * TilesPerChunk) - worldSize / 2);
 
             indicies.Add (4 * i + 0);
             indicies.Add (4 * i + 1);
 
-            verticies.Add (new Vector3 (0, 0, i * this.CellWorldSize) - worldSize / 2);
-            verticies.Add (new Vector3 (this.CellWorldSize * this.TotalCells, 0, i * this.CellWorldSize) - worldSize / 2);
+            verticies.Add (new Vector3 (0, 0, i * TileWorldSize) - worldSize / 2);
+            verticies.Add (new Vector3 (TileWorldSize * TilesPerChunk, 0, i * TileWorldSize) - worldSize / 2);
 
             indicies.Add (4 * i + 2);
             indicies.Add (4 * i + 3);

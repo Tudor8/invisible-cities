@@ -3,17 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Chunk : MonoBehaviour {
-    [SerializeField] Tile[,] tiles;
+    [Header ("Object References")]
     [SerializeField] GridDrawer gridDrawer;
     [SerializeField] Transform ground;
 
-    public void SetToSize(float cellSize, int totalCells) {
-        ground.transform.localScale = Vector3.one * cellSize * totalCells;
+    [Header ("Read Only")]
+    [SerializeField] Tile[,] tiles;
 
-        tiles = new Tile[totalCells, totalCells];
+    public void SetToSize(float tileWorldSize, int tilesPerChunk) {
+        ground.transform.localScale = Vector3.one * tileWorldSize * tilesPerChunk;
 
-        gridDrawer.CellWorldSize = cellSize;
-        gridDrawer.TotalCells = totalCells;
+        tiles = new Tile[tilesPerChunk, tilesPerChunk];
+
+        gridDrawer.TileWorldSize = tileWorldSize;
+        gridDrawer.TilesPerChunk = tilesPerChunk;
         gridDrawer.Generate ();
     }
 }
