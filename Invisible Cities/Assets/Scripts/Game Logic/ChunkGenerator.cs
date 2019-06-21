@@ -6,8 +6,11 @@ using UnityEngine;
 public class ChunkGenerator : MonoBehaviour {
     public static readonly Vector2Int sizeLimits = new Vector2Int (1, 1000);
 
+    [Header ("Object References")]
+    [SerializeField] ChunkProcessor chunkProcessor = new ChunkProcessor ();
+
     [Header ("Prefabs")]
-    [SerializeField] GameObject chunkPrefab;
+    [SerializeField] GameObject chunkPrefab = null;
 
     [Header ("Settings")]
     [SerializeField] Vector2Int chunkCount;
@@ -15,74 +18,40 @@ public class ChunkGenerator : MonoBehaviour {
     [SerializeField] float tileWorldSize = 0.5f;
 
     [Header ("Read Only")]
-    [SerializeField, ReadOnly] Chunk[,] chunks;
     [SerializeField, ReadOnly] float chunkWorldSize;
+    [SerializeField, ReadOnly] Chunk[,] chunks;
 
-    public ObjectTest testObj;
+    public PlaceableEntity testObj;
 
     void Awake () {
         this.chunks = new Chunk[this.chunkCount.x, this.chunkCount.y];
 
         this.chunkWorldSize = this.tilesPerChunk * this.tileWorldSize;
+
+        GenerateChunks ();
     }
 
     void Start () {
-        GenerateChunks ();
-
         SetPositionToMiddleOfChunks ();
 
         ParentChunksToSelf ();
 
         transform.position = Vector3.zero;
 
-        
-    }
+        SetUpProcessor ();
 
-    void Update() {
-        GetTilesOverArea (testObj.transform.TransformPoint (testObj.GetBottomLeftTilePosition ()), Vector2Int.one * testObj.TotalTiles);
+        Debug.Log (this.chunkProcessor.GetTilesOverArea (this.testObj.TileGenerator.GetBottomLeftTilePosition (), Vector2Int.one * this.testObj.TotalTiles));
     }
 
     void OnValidate () {
         this.chunkCount.Clamp (Vector2Int.one, Vector2Int.one * 1000);
     }
 
-    public Tile[,] GetTilesOverArea(Vector3 bottomLeft, Vector2Int size) {
-        Tile[,] result = new Tile[Mathf.RoundToInt(size.x), Mathf.RoundToInt (size.y)];
-
-       // Debug.Log (bottomLeft);
-
-        Vector2Int chunk = GetChunk (bottomLeft);
-        Vector2Int tileIndex = GetTileIndex (bottomLeft);
-        //Debug.Log (chunk);
-        //Debug.Log (bottomLeft.x + " " + bottomLeft.z + " " + gofuckyourself);
-
-        for(int i = tileIndex.x; i < tileIndex.x + size.x; i++) {
-            string s = "";
-            for(int j = tileIndex.y; j < tileIndex.y + size.y; j++) {
-                s += "[" + i + ", " + j + "]";
-            }
-            Debug.Log (s);
-        }
-
-        return result;
-    }
-
-    private Vector2Int GetChunk(Vector3 position) {
-        return new Vector2Int (
-            (int) ((position.z / chunkWorldSize) + chunkCount.x / 2f),
-            (int) ((position.x / chunkWorldSize) + chunkCount.y / 2f)
-        );
-    }
-
-    private Vector2Int GetTileIndex (Vector3 position) {
-        return new Vector2Int (
-            (int) (((position.z % chunkWorldSize) + chunkWorldSize / 2f) * (1 / tileWorldSize)),
-            (int) (((position.x % chunkWorldSize) + chunkWorldSize / 2f) * (1 / tileWorldSize))
-        );
-    }
-
-    public Tile GetTileAt (Vector3 position) {
-        return null;
+    private void SetUpProcessor () {
+        this.chunkProcessor.Chunks = this.chunks;
+        this.chunkProcessor.ChunkCount = this.chunkCount;
+        this.chunkProcessor.ChunkWorldSize = this.chunkWorldSize;
+        this.chunkProcessor.TileWorldSize = this.tileWorldSize;
     }
 
     private void GenerateChunks () {
@@ -91,7 +60,7 @@ public class ChunkGenerator : MonoBehaviour {
         for (int i = 0; i < this.chunkCount.x; i++) {
             for (int j = 0; j < this.chunkCount.y; j++) {
                 this.chunks[i, j] = GenerateNewChunk (position);
-                chunks[i, j].gameObject.name = string.Format ("Chunk [{0}][{1}]", i, j);
+                this.chunks[i, j].gameObject.name = string.Format ("Chunk [{0}][{1}]", i, j);
 
                 position += Vector3.right * this.chunkWorldSize;
             }

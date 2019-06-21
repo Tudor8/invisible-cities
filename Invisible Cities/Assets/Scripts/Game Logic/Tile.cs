@@ -3,5 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Tile {
-    private bool occupied;
+    [SerializeField] bool occupied;
+
+    public bool Occupied { get => this.occupied; set => this.occupied = value; }
 }

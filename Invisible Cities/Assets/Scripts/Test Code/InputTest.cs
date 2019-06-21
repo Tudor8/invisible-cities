@@ -6,14 +6,14 @@ public class InputTest : MonoBehaviour {
     public const int PRIMARY_MOUSE_BUTTON = 0;
 
     [Header ("Scene References")]
-    [SerializeField] Transform ground;
+    [SerializeField] Transform ground = null;
 
     [Header ("Settings")]
-    [SerializeField] LayerMask groundLayer;
-    [SerializeField] LayerMask buildingLayer;
+    [SerializeField] LayerMask groundLayer = new LayerMask ();
+    [SerializeField] LayerMask buildingLayer = new LayerMask ();
 
     [Header ("Read Only")]
-    [SerializeField, ReadOnly] private ObjectTest currentBuilding = null;
+    [SerializeField, ReadOnly] private PlaceableEntity currentBuilding = null;
     [SerializeField, ReadOnly] private Plane groundPlane;
 
     void Awake () {
@@ -63,7 +63,7 @@ public class InputTest : MonoBehaviour {
     }
 
     private void SetCurrentBuildingTo (GameObject gameObject) {
-        ObjectTest objectTest = gameObject?.GetComponent<ObjectTest> ();
+        PlaceableEntity objectTest = gameObject?.GetComponent<PlaceableEntity> ();
 
         if (objectTest != null) {
             this.currentBuilding = objectTest;
