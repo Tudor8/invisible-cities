@@ -11,19 +11,20 @@ public class Chunk : MonoBehaviour {
     [SerializeField] Tile[,] tiles;
 
     public Tile[,] Tiles { get => this.tiles; set => this.tiles = value; }
+    public Transform Ground { get => this.ground; set => this.ground = value; }
 
-    public void SetToSize (float tileWorldSize, int tilesPerChunk) {
-        this.ground.transform.localScale = Vector3.one * tileWorldSize * tilesPerChunk;
+    public void SetToSize (float tileWorldSize, Vector2Int tilesPerChunk) {
+        Ground.transform.localScale = new Vector3 (tileWorldSize * tilesPerChunk.x, tileWorldSize * tilesPerChunk.y, 1);
 
-        Tiles = new Tile[tilesPerChunk, tilesPerChunk];
-        for (int i = 0; i < tilesPerChunk; i++) {
-            for (int j = 0; j < tilesPerChunk; j++) {
+        Tiles = new Tile[tilesPerChunk.x, tilesPerChunk.y];
+        for (int i = 0; i < tilesPerChunk.y; i++) {
+            for (int j = 0; j < tilesPerChunk.x; j++) {
                 this.tiles[i, j] = new Tile ();
             }
         }
 
         this.gridDrawer.TileWorldSize = tileWorldSize;
-        this.gridDrawer.TilesPerChunk = tilesPerChunk;
+        this.gridDrawer.TilesPerChunk = tilesPerChunk.x;
         this.gridDrawer.Generate ();
     }
 }

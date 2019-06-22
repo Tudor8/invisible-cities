@@ -7,26 +7,28 @@ public class ChunkGenerator : MonoBehaviour {
     public static readonly Vector2Int sizeLimits = new Vector2Int (1, 1000);
 
     [Header ("Object References")]
-    [SerializeField] ChunkProcessor chunkProcessor = new ChunkProcessor ();
+    [SerializeField] ChunkProcessor chunkProcessor = null;
 
     [Header ("Prefabs")]
     [SerializeField] GameObject chunkPrefab = null;
 
     [Header ("Settings")]
     [SerializeField] Vector2Int chunkCount;
-    [SerializeField] int tilesPerChunk = 40;
+    [SerializeField] Vector2Int tilesPerChunk;
     [SerializeField] float tileWorldSize = 0.5f;
 
     [Header ("Read Only")]
-    [SerializeField, ReadOnly] float chunkWorldSize;
+    [SerializeField, ReadOnly] Vector2 chunkWorldSize;
     [SerializeField, ReadOnly] Chunk[,] chunks;
 
     public PlaceableEntity testObj;
 
+    public ChunkProcessor ChunkProcessor { get => this.chunkProcessor; set => this.chunkProcessor = value; }
+
     void Awake () {
         this.chunks = new Chunk[this.chunkCount.x, this.chunkCount.y];
 
-        this.chunkWorldSize = this.tilesPerChunk * this.tileWorldSize;
+        this.chunkWorldSize = (Vector2) this.tilesPerChunk * this.tileWorldSize;
 
         GenerateChunks ();
     }
@@ -39,8 +41,6 @@ public class ChunkGenerator : MonoBehaviour {
         transform.position = Vector3.zero;
 
         SetUpProcessor ();
-
-        Debug.Log (this.chunkProcessor.GetTilesOverArea (this.testObj.TileGenerator.GetBottomLeftTilePosition (), Vector2Int.one * this.testObj.TotalTiles));
     }
 
     void OnValidate () {
@@ -48,10 +48,10 @@ public class ChunkGenerator : MonoBehaviour {
     }
 
     private void SetUpProcessor () {
-        this.chunkProcessor.Chunks = this.chunks;
-        this.chunkProcessor.ChunkCount = this.chunkCount;
-        this.chunkProcessor.ChunkWorldSize = this.chunkWorldSize;
-        this.chunkProcessor.TileWorldSize = this.tileWorldSize;
+        ChunkProcessor.Chunks = this.chunks;
+        ChunkProcessor.ChunkCount = this.chunkCount;
+        ChunkProcessor.ChunkWorldSize = this.chunkWorldSize;
+        ChunkProcessor.TileWorldSize = this.tileWorldSize;
     }
 
     private void GenerateChunks () {
@@ -62,10 +62,10 @@ public class ChunkGenerator : MonoBehaviour {
                 this.chunks[i, j] = GenerateNewChunk (position);
                 this.chunks[i, j].gameObject.name = string.Format ("Chunk [{0}][{1}]", i, j);
 
-                position += Vector3.right * this.chunkWorldSize;
+                position += Vector3.right * this.chunkWorldSize.x;
             }
             position.x = Vector3.zero.x;
-            position += Vector3.forward * this.chunkWorldSize;
+            position += Vector3.forward * this.chunkWorldSize.y;
         }
     }
 
@@ -80,7 +80,7 @@ public class ChunkGenerator : MonoBehaviour {
     }
 
     private void SetPositionToMiddleOfChunks () {
-        Vector3 averagePosition = new Vector3 (this.chunkWorldSize * (this.chunkCount.x - 1), 0, this.chunkWorldSize * (this.chunkCount.y - 1));
+        Vector3 averagePosition = ((this.chunkCount - Vector2.one) * this.chunkWorldSize).ToHorizontalVector3 ();
         averagePosition = averagePosition.DivideBy (Vector3.one * 2);
         transform.position = averagePosition;
     }

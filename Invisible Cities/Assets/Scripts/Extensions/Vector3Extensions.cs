@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class VectorExtensions {
+public static class Vector3Extensions {
     /// <summary>
     /// Returns the closest (rounded) vector that is a multiple of the argument.
     /// </summary>
@@ -36,6 +36,16 @@ public static class VectorExtensions {
         vector.y /= divident.y;
         vector.z /= divident.z;
 
+        return vector;
+    }
+
+    public static Vector3 FlipX (this Vector3 vector) {
+        vector.x *= -1;
+        return vector;
+    }
+
+    public static Vector3 FlipZ (this Vector3 vector) {
+        vector.z *= -1;
         return vector;
     }
 }

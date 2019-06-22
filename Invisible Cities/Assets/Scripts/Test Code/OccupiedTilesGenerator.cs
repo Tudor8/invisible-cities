@@ -16,19 +16,10 @@ public class OccupiedTilesGenerator : MonoBehaviour {
     public float TileWorldSize { get => this.tileWorldSize; set => this.tileWorldSize = value; }
     public int TotalTiles { get => this.totalTiles; set => this.totalTiles = value; }
 
-    public Vector3 GetBottomLeftTilePosition () {
-        Vector3 tile = -Vector3.one * (TotalTiles - 1) / 2 * TileWorldSize;
-        tile.y = 0;
-
-        return tile;
-    }
-
     public Vector3 GetTopLeftTileLocalPosition () {
-        Vector3 tile = new Vector3 (
-           -((TotalTiles - 1) / 2f * TileWorldSize),
-           0,
-           (TotalTiles - 1) / 2f * TileWorldSize
-        );
+        float position = (TotalTiles - 1) / 2f * TileWorldSize;
+
+        Vector3 tile = new Vector3 (-position, 0, position);
 
         return tile;
     }
