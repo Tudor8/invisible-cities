@@ -65,7 +65,7 @@ public class InputTest : MonoBehaviour {
     private void SetCurrentBuildingTo (GameObject gameObject) {
         PlaceableEntity objectTest = gameObject?.GetComponent<PlaceableEntity> ();
 
-        if (objectTest != null) {
+        if (objectTest != null && !objectTest.Fixated) {
             this.currentBuilding = objectTest;
             this.currentBuilding.Activate ();
         }
@@ -73,6 +73,7 @@ public class InputTest : MonoBehaviour {
 
     private void ClearCurrentBuilding () {
         this.currentBuilding.Deactivate ();
+        this.currentBuilding.Fixate ();
         this.currentBuilding = null;
     }
 }

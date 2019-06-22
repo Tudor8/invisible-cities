@@ -15,6 +15,7 @@ public class OccupiedTilesGenerator : MonoBehaviour {
 
     public float TileWorldSize { get => this.tileWorldSize; set => this.tileWorldSize = value; }
     public int TotalTiles { get => this.totalTiles; set => this.totalTiles = value; }
+    public bool[,] OccupiedTiles { get => this.occupiedTiles; set => this.occupiedTiles = value; }
 
     public Vector3 GetTopLeftTileLocalPosition () {
         float position = (TotalTiles - 1) / 2f * TileWorldSize;
@@ -29,7 +30,7 @@ public class OccupiedTilesGenerator : MonoBehaviour {
     }
 
     public void CalculateTiles () {
-        this.occupiedTiles = new bool[TotalTiles, TotalTiles];
+        this.OccupiedTiles = new bool[TotalTiles, TotalTiles];
 
         Vector3 startingPosition = GetTopLeftTileLocalPosition ();
 
@@ -38,7 +39,7 @@ public class OccupiedTilesGenerator : MonoBehaviour {
             for (int j = 0; j < TotalTiles; j++) {
                 Vector3 position = transform.TransformPoint (current);
 
-                this.occupiedTiles[i, j] = DoCollidersContainPoint (position);
+                this.OccupiedTiles[i, j] = DoCollidersContainPoint (position);
 
                 current.x += TileWorldSize;
             }
