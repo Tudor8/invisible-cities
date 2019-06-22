@@ -8,7 +8,7 @@ public class PlaceableEntity : MonoBehaviour {
     [SerializeField] SnapToGrid snapToGrid = null;
     [SerializeField] SnapToLayer snapToLayer = null;
     [SerializeField] OccupiedTilesGenerator tileGenerator = null;
-    [SerializeField] TextMeshProUGUI validText;
+    [SerializeField] TextMeshProUGUI validText = null;
 
     [Header ("Settings")]
     [SerializeField] float tileWorldSize = 0.5f;

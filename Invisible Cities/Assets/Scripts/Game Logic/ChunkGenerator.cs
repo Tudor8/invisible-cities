@@ -44,7 +44,8 @@ public class ChunkGenerator : MonoBehaviour {
     }
 
     void OnValidate () {
-        this.chunkCount.Clamp (Vector2Int.one, Vector2Int.one * 1000);
+        this.chunkCount.Clamp (Vector2Int.one, Vector2Int.one * 100);
+        this.tilesPerChunk.Clamp (Vector2Int.one * 10, Vector2Int.one * 1000);
     }
 
     private void SetUpProcessor () {
